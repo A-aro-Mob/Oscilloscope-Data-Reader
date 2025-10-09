@@ -49,3 +49,5 @@ print(raw_data[:100])  # Print first 100 bytes for inspection
 
 
 # how does fpga go from the scope to the pc?
+# try to understand the OSI communication model 
+# (standard created by a company that outlines how communication applications are built)
