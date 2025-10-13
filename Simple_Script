@@ -38,7 +38,6 @@ while True:
 
     time.sleep(0.1)
 
-
 # Set waveform transfer parameters (optional)
 scope.write("WFSU SP,0,NP,1000,FP,0")
 
