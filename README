@@ -1,3 +1,5 @@
+Repository Link: https://github.com/Dcardwell05/Oscilloscope-Data-Reader.git
+
 This code connects to a Siglent SDS 1104X-E Oscilloscope and gets Voltage data.
 
 To use the program, run the "Data_Collector" program and answer the two prompts that come up. You will be asked to answer how many data points you desire as well as what format you want the time varable in (centered around or starting at 0). 
