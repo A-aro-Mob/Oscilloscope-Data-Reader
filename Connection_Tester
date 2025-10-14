@@ -1,3 +1,9 @@
 import pyvisa
+
 rm = pyvisa.ResourceManager()
+scope = rm.open_resource(rm.list_resources()[0])
 print(rm.list_resources())
+
+# Oscilloscope query settings
+print("Oscilloscope Query Settings\n")
+print(scope.query("WFSU?"))

@@ -1,5 +1,7 @@
 # Home Electronics Lab
 
+https://github.com/sanderberents/eelab?tab=readme-ov-file #Github Repository
+
 Controlling the Siglent SDS1104X-U oscilloscope, SDG1032X Arbitrary Waveform Generator and SPD4323X Linear DC Power Supply with SCPI. Because of firmware bugs and the limited ability to download samples directly from the oscilloscope, the scripts use different approaches to obtain the necessary measurements.
 
 Prerequisites:
