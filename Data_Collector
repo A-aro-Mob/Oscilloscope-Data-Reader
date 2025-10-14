@@ -1,0 +1,67 @@
+#Oscilloscope Type: Siglent SDS 1104X-E 
+
+#Imports
+import pyvisa
+import numpy as np
+
+#Resource Manager
+rm = pyvisa.ResourceManager()
+scope = rm.open_resource(rm.list_resources()[0])
+
+def main():
+    rawdata = get_raw_data()
+    processed_data = process_raw_data(rawdata)
+    create_csv(processed_data)
+
+    return()
+
+# Getting raw data from oscilloscope
+def get_raw_data():
+
+    data_amount = int(data_length())
+
+    # Commands to get data
+    scope.write(':STOP')
+    scope.write(f"WFSU SP,2,NP,{data_amount},FP,100")
+    scope.write('C1:WF? DAT2')
+    rawdata = scope.read_raw()
+
+    # Return raw data
+    return(rawdata)
+
+# Processing raw data into voltage values
+def process_raw_data(rawdata):
+    # Find the start of the binary block
+    start = rawdata.find(b'#')
+    header_len = int(rawdata[start+1:start+2])
+    data_len = int(rawdata[start+2:start+2+header_len])
+    data_start = start + 2 + header_len
+    data = rawdata[data_start:data_start + data_len]
+
+    # Convert to signed integers
+    wave = np.frombuffer(data, dtype=np.uint8).astype(np.int16)
+    wave[wave > 127] -= 255
+
+    # Query vertical scale and offset
+    vdiv = float(scope.query('C1:VDIV?').split()[1][:-1])
+    voffset = float(scope.query('C1:OFST?').split()[1][:-1])
+
+    # Convert to voltage values
+    voltages = wave * (vdiv / 25) - voffset
+
+    # Return first few voltage values
+    return(voltages)
+
+# Getting user input for data length
+def data_length():
+    while length != int:
+        length = input("How many data points do you want to collect? ")
+    return(length)
+
+# Creating CSV file from data
+def create_csv(data):
+    np.savetxt("Voltage.csv", data, delimiter=",")
+    return()
+
+if __name__ == "__main__":
+    main()
