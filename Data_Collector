@@ -1,23 +1,21 @@
-#Oscilloscope Type: Siglent SDS 1104X-E 
+# Oscilloscope Type: Siglent SDS 1104X-E
 
-#Imports
+# Imports
 import pyvisa
 import numpy as np
 
-#Resource Manager
+# Resource Manager
 rm = pyvisa.ResourceManager()
 scope = rm.open_resource(rm.list_resources()[0])
 
 def main():
     rawdata = get_raw_data()
-    processed_data = process_raw_data(rawdata)
-    create_csv(processed_data)
-
-    return()
+    voltages = process_raw_data(rawdata)
+    times = generate_time_axis(len(voltages))
+    create_csv(times, voltages)
 
 # Getting raw data from oscilloscope
 def get_raw_data():
-
     data_amount = int(data_length())
 
     # Commands to get data
@@ -26,8 +24,7 @@ def get_raw_data():
     scope.write('C1:WF? DAT2')
     rawdata = scope.read_raw()
 
-    # Return raw data
-    return(rawdata)
+    return rawdata
 
 # Processing raw data into voltage values
 def process_raw_data(rawdata):
@@ -48,20 +45,35 @@ def process_raw_data(rawdata):
 
     # Convert to voltage values
     voltages = wave * (vdiv / 25) - voffset
+    voltages = np.round(voltages, 4)
 
-    # Return first few voltage values
-    return(voltages)
+    return voltages
+
+# Generate time axis based on TDIV
+def generate_time_axis(num_points):
+    tdiv = float(scope.query('TDIV?').split()[1][:-1])  # e.g., 'TDIV 1.00E-03S'
+    total_time = 14 * tdiv  # 14 divisions across the screen
+
+    # Center around 0 or start from 0
+    time_input = input("Do you want the time axis centered around 0? (y/n): ").strip().lower()
+    if time_input == 'y':
+        times = np.linspace(-total_time/2, total_time/2, num_points) # Centering time around 0
+    else:
+        times = np.linspace(0, total_time, num_points) # Starting time from 0
+
+    times = np.round(times, 4)
+    return times
 
 # Getting user input for data length
 def data_length():
-    while length != int:
-        length = input("How many data points do you want to collect? ")
-    return(length)
+    length = input("How many data points do you want to collect? ")
+    return length
 
-# Creating CSV file from data
-def create_csv(data):
-    np.savetxt("Voltage.csv", data, delimiter=",")
-    return()
+# Creating CSV file from time and voltage data
+def create_csv(times, voltages):
+    combined = np.column_stack((times, voltages))
+    np.savetxt("Voltage.csv", combined, delimiter=",", fmt="%.4f,%.4f", header="Time(s),Voltage(V)", comments='')
+    return
 
 if __name__ == "__main__":
     main()
