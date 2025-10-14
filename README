@@ -1,1 +1,9 @@
-This code is still a work in progress, however the goal of this code is to connect to a Siglent SDS 1104X-E Oscilloscope and get Voltage data.
+This code connects to a Siglent SDS 1104X-E Oscilloscope and gets Voltage data.
+
+To use the program, run the "Data_Collector" program and answer the two prompts that come up. You will be asked to answer how many data points you desire as well as what format you want the time varable in (centered around or starting at 0). 
+
+The program will return a csv named Voltage.csv and a 2D numpy array.
+
+The "Basic_Working_Code" file is the barebones version of the "Data_Collector" file. All it will do is print out the first 10 data points, but it is very easy to build off of it to create one's own version of the code.
+
+The "Connection_Tester" file will just print out the address of the Oscilloscope and the Oscilloscope Query settings. It is a good sanity check to make sure you are actually connected to the oscilloscope.

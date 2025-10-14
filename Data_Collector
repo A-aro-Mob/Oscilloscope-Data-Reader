@@ -13,6 +13,8 @@ def main():
     voltages = process_raw_data(rawdata)
     times = generate_time_axis(len(voltages))
     create_csv(times, voltages)
+    data_array = create_array(times, voltages)
+    print("Data collection complete. Voltage.csv created.")
 
 # Getting raw data from oscilloscope
 def get_raw_data():
