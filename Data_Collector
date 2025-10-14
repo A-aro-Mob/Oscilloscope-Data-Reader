@@ -75,5 +75,10 @@ def create_csv(times, voltages):
     np.savetxt("Voltage.csv", combined, delimiter=",", fmt="%.4f,%.4f", header="Time(s),Voltage(V)", comments='')
     return
 
+def create_array(times, voltages):
+    data_array = np.column_stack((times, voltages))
+    return data_array
+
+
 if __name__ == "__main__":
     main()
