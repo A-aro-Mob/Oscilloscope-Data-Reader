@@ -1,22 +1,22 @@
-#Oscilloscope Type: Siglent SDS 1104X-E 
+# Oscilloscope Type: Siglent SDS 1104X-E
 
-#Imports
+# Imports
+import numpy as np
 import pyvisa
 
-#Resource Manager
+# Resource Manager
 rm = pyvisa.ResourceManager()
 scope = rm.open_resource(rm.list_resources()[0])
 
 # Commands to get data
 scope.write(':STOP')
 scope.write("WFSU SP,2,NP,500,FP,100")
-scope.write('C1:WF? DAT2')
+scope.write('C3:WF? DAT2')
 rawdata = scope.read_raw()
 
 # Print raw data
 print(rawdata)
 
-import numpy as np
 
 # Find the start of the binary block
 start = rawdata.find(b'#')
@@ -30,8 +30,8 @@ wave = np.frombuffer(data, dtype=np.uint8).astype(np.int16)
 wave[wave > 127] -= 255
 
 # Query vertical scale and offset
-vdiv = float(scope.query('C1:VDIV?').split()[1][:-1])
-voffset = float(scope.query('C1:OFST?').split()[1][:-1])
+vdiv = float(scope.query('C3:VDIV?').split()[1][:-1])
+voffset = float(scope.query('C3:OFST?').split()[1][:-1])
 
 # Convert to voltage values
 voltages = wave * (vdiv / 25) - voffset
